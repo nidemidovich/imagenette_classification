@@ -56,6 +56,17 @@ def compute_accuracy(model, loader):
     return accuracy
 
 
+def save_checkpoint(state, filename="my_checkpoint.pth.tar"):
+    torch.save(state, filename)
+
+
+def load_checkpoint(checkpoint, model, optimizer, lr):
+    model.load_state_dict(checkpoint["state_dict"])
+
+    for param_group in optimizer.param_groups:
+        param_group["lr"] = lr
+
+
 if __name__ == '__main__':
     make_csv('./train', 'train.csv')
     make_csv('./val', 'val.csv')

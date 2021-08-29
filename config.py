@@ -9,6 +9,9 @@ WEIGHT_DECAY = 1e-4
 FACTOR = 0.333
 PATIENCE = 3
 NUM_EPOCHS = 20
+CHECKPOINT_FILE = "resnet18.pth.tar"
+SAVE_MODEL = True
+LOAD_MODEL = True
 
 transforms = t.Compose([
     t.Resize((224, 224)),

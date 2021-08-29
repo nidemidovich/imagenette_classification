@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -7,7 +9,7 @@ from torchvision import models
 
 from dataset import ImagenetteDataset
 import config
-from utils import compute_accuracy
+from utils import compute_accuracy, load_checkpoint, save_checkpoint
 
 
 def train_model(model, train_loader, val_loader, loss, optimizer, num_epochs, scheduler=None, scheduler_loss=False): 
@@ -53,6 +55,13 @@ def train_model(model, train_loader, val_loader, loss, optimizer, num_epochs, sc
                 scheduler.step(ave_loss)
             else:
                 scheduler.step()
+
+        if config.SAVE_MODEL:
+            checkpoint = {
+                "state_dict": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+            }
+            save_checkpoint(checkpoint, filename=f"resnet18_{epoch}.pth.tar")
         
         print(f'Average loss: {ave_loss}, Train accuracy: {train_accuracy}, Val accuracy: {val_accuracy}')
         
@@ -112,6 +121,9 @@ def main():
         factor=config.FACTOR, 
         patience=config.PATIENCE
     )
+    
+    if config.LOAD_MODEL and config.CHECKPOINT_FILE in os.listdir():
+        load_checkpoint(torch.load(config.CHECKPOINT_FILE), model, optimizer, config.LEARNING_RATE)
 
     loss_history, train_history, val_history = train_model(
         model,
