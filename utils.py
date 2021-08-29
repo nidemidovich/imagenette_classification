@@ -1,6 +1,5 @@
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -29,34 +28,5 @@ def make_csv(path):
     df.to_csv('imagenette_dataset.csv', index=False)
 
 
-def visualize_samples(dataset, title=None, count=10):
-    """
-    Visualizes random samples.
-
-    Arguments:
-        dataset (torch.Dataset): the dataset to visualize the samples from;
-        title, (string, optional): if passed, it is set as a title of plot;
-        count, (int, optional): num of the samples to visualize.
-    """
-    indices = np.random.choice(
-        np.arange(len(dataset)),
-        count,
-        replace=False
-    )
-
-    plt.figure(figsize=(count * 3, 3))
-    if title:
-        plt.suptitle(title)
-    for i, index in enumerate(indices):
-        x, y, _ = dataset[index]
-        plt.subplot(1, count, i + 1)
-        plt.title("Label: %s" % y)
-        plt.imshow(x)
-        plt.grid(False)
-        plt.axis('off')
-        plt.show()
-
-
 if __name__ == '__main__':
     make_csv('./train')
-

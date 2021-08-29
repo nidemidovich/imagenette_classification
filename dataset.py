@@ -51,7 +51,6 @@ if __name__ == '__main__':
     )
 
     for x, y, file in loader:
-        print(file)
         print(x.shape)
         print(y.shape)
         break
