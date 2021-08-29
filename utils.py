@@ -2,14 +2,18 @@ import os
 
 import numpy as np
 import pandas as pd
+import torch
+
+import config
 
 
-def make_csv(path):
+def make_csv(path, name):
     """
     Makes csv file with images and their labels.
 
     Arguments:
         path (string): path to the images;
+        name (string): name for csv file.
     """
     df = None
 
@@ -25,8 +29,33 @@ def make_csv(path):
     map_dict = {folder: i for folder, i in zip(folders, range(len(folders)))}
     df['label'] = df['folder'].map(map_dict)
 
-    df.to_csv('imagenette_dataset.csv', index=False)
+    df.to_csv(name, index=False)
+
+
+def compute_accuracy(model, loader):
+    """
+    Computes accuracy on the dataset wrapped in a loader
+    
+    Returns: 
+        accuracy (float): a float value between 0 and 1.
+    """
+    model.eval()
+    
+    correct = 0
+    total = 0
+    for x, y, _ in loader:
+        x_gpu = x.to(config.DEVICE)
+        y_gpu = y.to(config.DEVICE)
+
+        preds = torch.argmax(model(x_gpu), 1)
+        correct += torch.sum(preds == y_gpu)
+        total += y.shape[0]
+
+    accuracy = correct / total
+    
+    return accuracy
 
 
 if __name__ == '__main__':
-    make_csv('./train')
+    make_csv('./train', 'train.csv')
+    make_csv('./val', 'val.csv')

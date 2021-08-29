@@ -1,9 +1,11 @@
-import config
 import os
+
 import pandas as pd
 from PIL import Image
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
+
+import config
 
 
 class ImagenetteDataset(Dataset):
@@ -41,7 +43,7 @@ class ImagenetteDataset(Dataset):
 
 if __name__ == '__main__':
     dataset = ImagenetteDataset(
-        csv_file='imagenette_dataset.csv',
+        csv_file='train.csv',
         root_dir='train',
         transforms=config.transforms
     )
