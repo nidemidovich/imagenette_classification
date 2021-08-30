@@ -4,7 +4,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import SubsetRandomSampler
+from torch.utils.data import DataLoader, SubsetRandomSampler
 from torchvision import models
 
 from dataset import ImagenetteDataset
@@ -93,12 +93,12 @@ def main():
     train_sampler = SubsetRandomSampler(train_indices)
     val_sampler = SubsetRandomSampler(val_indices)
 
-    train_loader = torch.utils.data.DataLoader(
+    train_loader = DataLoader(
         dataset=train_dataset, 
         batch_size=config.BATCH_SIZE, 
         sampler=train_sampler
     )
-    val_loader = torch.utils.data.DataLoader(
+    val_loader = DataLoader(
         dataset=val_dataset, 
         batch_size=config.BATCH_SIZE, 
         sampler=val_sampler
@@ -140,3 +140,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
