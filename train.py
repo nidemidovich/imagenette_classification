@@ -28,16 +28,16 @@ def train_model(model, train_loader, val_loader, loss, optimizer, num_epochs, sc
         total_samples = 0
         for i_step, (x, y, _) in enumerate(train_loader):
           
-            x_gpu = x.to(config.DEVICE)
-            y_gpu = y.to(config.DEVICE)
-            prediction = model(x_gpu)    
-            loss_value = loss(prediction, y_gpu)
+            x = x.to(config.DEVICE)
+            y = y.to(config.DEVICE)
+            prediction = model(x)    
+            loss_value = loss(prediction, y)
             optimizer.zero_grad()
             loss_value.backward()
             optimizer.step()
             
             _, indices = torch.max(prediction, 1)
-            correct_samples += torch.sum(indices == y_gpu)
+            correct_samples += torch.sum(indices == y)
             total_samples += y.shape[0]
             
             loss_accum += loss_value
@@ -113,7 +113,8 @@ def main():
 
     loss = nn.CrossEntropyLoss()
     optimizer = optim.Adam(
-        params=model.parameters(), 
+        params=model.parameters(),
+        lr=config.LEARNING_RATE,
         weight_decay=config.WEIGHT_DECAY
     )
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
@@ -136,3 +137,6 @@ def main():
         True
     )
     
+
+if __name__ == "__main__":
+    main()
