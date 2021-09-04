@@ -6,6 +6,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, SubsetRandomSampler
 from torchvision import models
+import pandas
 
 from dataset import ImagenetteDataset
 import config
@@ -68,7 +69,7 @@ def train_model(model, train_loader, val_loader, loss, optimizer, num_epochs, sc
     return loss_history, train_history, val_history
 
 
-def conduct_training():
+def conduct_training(tranfsforms):
     train_dataset = ImagenetteDataset(
         csv_file='train.csv',
         root_dir='train',
@@ -146,3 +147,4 @@ def conduct_training():
     test_accuracy = compute_accuracy(model, test_loader)
 
     return loss_history, train_history, val_history, test_accuracy
+
