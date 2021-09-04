@@ -9,7 +9,7 @@ import config
 
 
 class ImagenetteDataset(Dataset):
-    def __init__(self, csv_file, root_dir, transforms=None):
+    def __init__(self, csv_file, root_dir, transforms=None, train=True):
         """
         Arguments:
             csv_file (string): csv file with each image and its label;
@@ -20,6 +20,7 @@ class ImagenetteDataset(Dataset):
         self.annotations = pd.read_csv(csv_file)
         self.root_dir = root_dir
         self.transforms = transforms
+        self.train = train
 
     def __len__(self):
         return self.annotations.shape[0]
@@ -37,6 +38,9 @@ class ImagenetteDataset(Dataset):
 
         if self.transforms:
             img = self.transforms(img)
+
+        if not self.train:
+            return img
 
         return img, label, image_name
 

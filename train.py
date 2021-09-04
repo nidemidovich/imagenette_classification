@@ -68,27 +68,29 @@ def train_model(model, train_loader, val_loader, loss, optimizer, num_epochs, sc
     return loss_history, train_history, val_history
 
 
-def main():
+def conduct_training():
     train_dataset = ImagenetteDataset(
         csv_file='train.csv',
         root_dir='train',
         transforms=config.transforms
     )
-    val_dataset = ImagenetteDataset(
+    test_dataset = ImagenetteDataset(
         csv_file='val.csv',
         root_dir='val',
-        transforms=config.transforms
+        transforms=config.transforms,
+        train=False
     )
 
     train_data_size = len(train_dataset)
-    val_data_size = len(val_dataset)
 
-    train_indices = list(range(train_data_size))
-    val_indices = list(range(val_data_size))
+    val_split = int(np.floor(0.2 * train_data_size))
+
+    indices = list(range(train_data_size))
 
     np.random.seed(42)
-    np.random.shuffle(train_indices)
-    np.random.shuffle(val_indices)
+    np.random.shuffle(indices)
+
+    val_indices, train_indices = indices[:val_split], indices[val_split:]
 
     train_sampler = SubsetRandomSampler(train_indices)
     val_sampler = SubsetRandomSampler(val_indices)
@@ -99,7 +101,7 @@ def main():
         sampler=train_sampler
     )
     val_loader = DataLoader(
-        dataset=val_dataset, 
+        dataset=train_dataset, 
         batch_size=config.BATCH_SIZE, 
         sampler=val_sampler
     )
@@ -137,7 +139,10 @@ def main():
         True
     )
     
+    test_loader = DataLoader(
+        dataset=test_dataset, 
+        batch_size=config.BATCH_SIZE
+    )
+    test_accuracy = compute_accuracy(model, test_loader)
 
-if __name__ == "__main__":
-    main()
-    
+    return loss_history, train_history, val_history, test_accuracy
